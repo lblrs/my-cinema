@@ -63,8 +63,8 @@ class RoomController {
 
     public function create($name, $capacity, $type, $active, $created_at, $updated_at)
     {
-        $created_at = (new DateTime($created_at))->format('Y:m:d H:i:s');
-        $updated_at = (new Datetime($updated_at))->format('y:m:d H:i:s');
+        $created_at = (new DateTime($created_at))->format('Y-m-d H:i:s');
+        $updated_at = (new DateTime($updated_at))->format('Y-m-d H:i:s');
         $active = true;
 
         $query = "INSERT INTO rooms (name, capacity, type, active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
@@ -72,6 +72,20 @@ class RoomController {
         $stmt->execute([$name, $capacity, $type, $active, $created_at, $updated_at]);
 
         return $this->db->lastInsertId();
+    }
+
+    
+
+    public function update($id, $name, $capacity, $type, $updated_at)
+    {
+        $updated_at = (new DateTime($updated_at))->format('Y-m-d H:i:s');
+
+        $query = 'UPDATE rooms SET name = ?, capacity = ?, type = ?, updated_at = ? WHERE id = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$name, $capacity, $type, $updated_at, $id]);
+
+        return $id;
+
     }
 
 }

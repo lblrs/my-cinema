@@ -92,4 +92,14 @@ class ScreeningController {
 
         return $this->db->lastInsertId();
     }
+
+
+    public function update($id, $movie_id, $room_id, $start_time)
+    {
+        $query = 'UPDATE screenings SET movie_id = ?, room_id = ?, start_time = ? WHERE id = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$movie_id, $room_id, $start_time, $id]);
+
+        return $id;
+    }
 } 

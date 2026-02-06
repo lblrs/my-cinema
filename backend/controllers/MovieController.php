@@ -78,4 +78,17 @@ class MovieController {
         return $this->db->lastInsertId();
     }
 
+
+    public function update($id, $title, $description, $duration, $release_year, $genre, $director, $updated_at)
+    {
+        $updated_at = (new DateTime($updated_at))->format('Y-m-d H:i:s');
+
+        $query = 'UPDATE movies SET title = ?, description = ?, duration = ?, release_year = ?, genre = ?, director = ?, updated_at = ? WHERE id = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$title, $description, $duration, $release_year, $genre, $director, $updated_at, $id]);
+
+        return $id;
+    }
+
+
 }

@@ -55,6 +55,27 @@ if ($uri === '/api/movies' && $method === 'POST') {
 }
 
 
+// PUT /api/movies/1 - modifier un film
+if (preg_match('/^\/api\/movies\/(\d+)$/', $uri, $matches) && $method === 'PUT') {
+    $id = $matches[1];
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $controller = new MovieController();
+    $id = $controller->update($id, $data['title'], $data['description'], $data['duration'], $data['release_year'], $data['genre'], $data['director'], $data['updated_at']);
+
+    http_response_code(200);
+    echo json_encode(['id' => $id, 'message' => 'Film modifié']);
+}
+
+
+
+
+
+
+
+
+
+
 
 
 // GET /api/rooms - récupérer toutes les rooms
@@ -89,6 +110,28 @@ if ($uri === '/api/rooms' && $method === 'POST') {
     http_response_code(201);
     echo json_encode(['id' => $id, 'message' => 'Salle créée']);
 }
+
+
+// PUT /api/rooms/1 - modifier une salle
+if (preg_match('/^\/api\/rooms\/(\d+)$/', $uri, $matches) && $method === 'PUT') {
+    $id = $matches[1];
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $controller = new RoomController();
+    $id = $controller->update($id, $data['name'], $data['capacity'], $data['type'], $data['active'], $data['updated_at']);
+
+    http_response_code(200);
+    echo json_encode(['id' => $id, 'message' => 'Salle modifié']);
+}
+
+
+
+
+
+
+
+
+
 
 
 // GET /api/screenings - récupérer tous les senaces
