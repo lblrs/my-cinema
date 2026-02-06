@@ -90,5 +90,12 @@ class MovieController {
         return $id;
     }
 
+    public function delete($id)
+    {
+        $query = 'DELETE FROM movies WHERE id= ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$id]);
+    }
+
 
 }

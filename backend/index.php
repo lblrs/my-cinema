@@ -67,6 +67,16 @@ if (preg_match('/^\/api\/movies\/(\d+)$/', $uri, $matches) && $method === 'PUT')
     echo json_encode(['id' => $id, 'message' => 'Film modifié']);
 }
 
+// DELETE /api/movies/1 - supprimer un film
+if (preg_match('/^\/api\/movies\/(\d+)$/', $uri, $matches) && $method === 'DELETE') {
+    $id = $matches[1];
+    $controller = new MovieController();
+    $controller->delete($id);
+
+    http_response_code(200);
+    echo json_encode(['message' => 'Film supprimé']);
+}
+
 
 
 
@@ -124,6 +134,16 @@ if (preg_match('/^\/api\/rooms\/(\d+)$/', $uri, $matches) && $method === 'PUT') 
     echo json_encode(['id' => $id, 'message' => 'Salle modifié']);
 }
 
+// DELETE /api/rooms/1 - supprimer une salle
+if (preg_match('/^\/api\/rooms\/(\d+)$/', $uri, $matches) && $method === 'DELETE') {
+    $id = $matches[1];
+    $controller = new RoomController();
+    $controller->delete($id);
+
+    http_response_code(200);
+    echo json_encode(['message' => 'Salle supprimée']);
+}
+
 
 
 
@@ -165,4 +185,14 @@ if ($uri === '/api/screenings' && $method === 'POST') {
 
     http_response_code(201);
     echo json_encode(['id' => $id, 'message' => 'Seance créé']);
+}
+
+// DELETE 
+if (preg_match('/^\/api\/screenings\/(\d+)$/', $uri, $matches) && $method === 'DELETE') {
+    $id = $matches[1];
+    $controller = new ScreeningController();
+    $controller->delete($id);
+
+    http_response_code(200);
+    echo json_encode(['message' => 'Séance supprimée']);
 }

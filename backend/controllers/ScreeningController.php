@@ -86,6 +86,8 @@ class ScreeningController {
 
     public function create($movie_id, $room_id, $start_time, $created_at)
     {
+        $created_at = (new DateTime($created_at))->format('Y-m-d H:i:s');
+
         $query = 'INSERT INTO screenings (movie_id, room_id, start_time, created_at) VALUES (?,?,?,?)';
         $stmt = $this->db->prepare($query);
         $stmt->execute([$movie_id, $room_id, $start_time, $created_at]);
@@ -101,5 +103,13 @@ class ScreeningController {
         $stmt->execute([$movie_id, $room_id, $start_time, $id]);
 
         return $id;
+    }
+
+
+    public function delete($id)
+    {
+        $query = 'DELETE FROM screenings WHERE id = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$id]);
     }
 } 

@@ -88,4 +88,12 @@ class RoomController {
 
     }
 
+
+    public function delete($id)
+    {
+        $query = 'DELETE FROM rooms WHERE id = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$id]);
+    }
+
 }
