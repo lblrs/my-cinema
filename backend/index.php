@@ -21,7 +21,13 @@ require_once __DIR__ . "/../backend/controllers/ScreeningController.php";
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
 
-// GET /api/movies
+
+
+
+
+// FILMS
+
+// GET
 if ($uri === '/api/movies' && $method === 'GET') {
     $controller = new MovieController();
     $movie = $controller->getAll();
@@ -29,7 +35,6 @@ if ($uri === '/api/movies' && $method === 'GET') {
     echo json_encode($moviesArray);
 }
 
-// GET /api/movies/1
 if (preg_match('/^\/api\/movies\/(\d+)$/', $uri, $matches) && $method === 'GET') {
     $id = $matches[1];
     $controller = new MovieController();
@@ -43,7 +48,7 @@ if (preg_match('/^\/api\/movies\/(\d+)$/', $uri, $matches) && $method === 'GET')
     }
 }
 
-// POST /api/movies
+// POST
 if ($uri === '/api/movies' && $method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -55,7 +60,7 @@ if ($uri === '/api/movies' && $method === 'POST') {
 }
 
 
-// PUT /api/movies/1 - modifier un film
+// PUT 
 if (preg_match('/^\/api\/movies\/(\d+)$/', $uri, $matches) && $method === 'PUT') {
     $id = $matches[1];
     $data = json_decode(file_get_contents('php://input'), true);
@@ -67,7 +72,7 @@ if (preg_match('/^\/api\/movies\/(\d+)$/', $uri, $matches) && $method === 'PUT')
     echo json_encode(['id' => $id, 'message' => 'Film modifié']);
 }
 
-// DELETE /api/movies/1 - supprimer un film
+// DELETE
 if (preg_match('/^\/api\/movies\/(\d+)$/', $uri, $matches) && $method === 'DELETE') {
     $id = $matches[1];
     $controller = new MovieController();
@@ -86,9 +91,9 @@ if (preg_match('/^\/api\/movies\/(\d+)$/', $uri, $matches) && $method === 'DELET
 
 
 
+// SALLES
 
-
-// GET /api/rooms - récupérer toutes les rooms
+// GET
 if ($uri === '/api/rooms' && $method === 'GET') {
     $controller = new RoomController();
     $rooms = $controller->getAll();
@@ -96,7 +101,6 @@ if ($uri === '/api/rooms' && $method === 'GET') {
     echo json_encode($roomsArray);
 }
 
-// GET /api/rooms/1 - récupérer une room
 if (preg_match('/^\/api\/rooms\/(\d+)$/', $uri, $matches) && $method === 'GET') {
     $id = $matches[1];
     $controller = new RoomController();
@@ -110,7 +114,7 @@ if (preg_match('/^\/api\/rooms\/(\d+)$/', $uri, $matches) && $method === 'GET') 
     }
 }
 
-// POST /api/rooms - créer une room
+// POST
 if ($uri === '/api/rooms' && $method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -122,7 +126,7 @@ if ($uri === '/api/rooms' && $method === 'POST') {
 }
 
 
-// PUT /api/rooms/1 - modifier une salle
+// PUT
 if (preg_match('/^\/api\/rooms\/(\d+)$/', $uri, $matches) && $method === 'PUT') {
     $id = $matches[1];
     $data = json_decode(file_get_contents('php://input'), true);
@@ -134,7 +138,7 @@ if (preg_match('/^\/api\/rooms\/(\d+)$/', $uri, $matches) && $method === 'PUT') 
     echo json_encode(['id' => $id, 'message' => 'Salle modifié']);
 }
 
-// DELETE /api/rooms/1 - supprimer une salle
+// DELETE
 if (preg_match('/^\/api\/rooms\/(\d+)$/', $uri, $matches) && $method === 'DELETE') {
     $id = $matches[1];
     $controller = new RoomController();
@@ -152,9 +156,9 @@ if (preg_match('/^\/api\/rooms\/(\d+)$/', $uri, $matches) && $method === 'DELETE
 
 
 
+// SEANCES
 
-
-// GET /api/screenings - récupérer tous les senaces
+// GET
 if ($uri === '/api/screenings' && $method === 'GET') {
     $controller = new ScreeningController();
     $screenings = $controller->getAll();
@@ -162,7 +166,6 @@ if ($uri === '/api/screenings' && $method === 'GET') {
     echo json_encode($screeningsArray);
 }
 
-// GET /api/screenings/1 - récupérer un seane
 if (preg_match('/^\/api\/screenings\/(\d+)$/', $uri, $matches) && $method === 'GET') {
     $id = $matches[1];
     $controller = new ScreeningController();
@@ -176,15 +179,15 @@ if (preg_match('/^\/api\/screenings\/(\d+)$/', $uri, $matches) && $method === 'G
     }
 }
 
-// POST /api/screenings - créer un screening
+// POST
 if ($uri === '/api/screenings' && $method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
     $controller = new ScreeningController();
-    $id = $controller->create($data['id'], $data['movie_id'], $data['room_id'], $data['start_time'], $data['created_at']);
+    $id = $controller->create($data['movie_id'], $data['room_id'], $data['start_time'], $data['created_at']);
 
     http_response_code(201);
-    echo json_encode(['id' => $id, 'message' => 'Seance créé']);
+    echo json_encode(['id' => $id, 'message' => 'Séance créée']);
 }
 
 // DELETE 

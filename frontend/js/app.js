@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-        function setupDeleteMovieButton(movieId) {
+    function setupDeleteMovieButton(movieId) {
         const deleteMovieBtn = document.getElementById(`deleteMovie-${movieId}`);
 
         deleteMovieBtn.addEventListener("click", function () {
@@ -180,6 +180,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+    
 
 
 
@@ -337,6 +339,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+
+
+
     // SEANCES
     function getSeances() {
         fetch('http://localhost:8000/api/screenings')
@@ -347,26 +353,167 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-
     function afficherSeances(screenings) {
+        const planningDiv = document.getElementById("planningDiv");
+        planningDiv.innerHTML = "";
+
         screenings.forEach(screening => {
             const div = document.createElement("div");
 
             div.innerHTML =
-                `<div class="card">
-                <h3>${screening.start_time}</h3>
-                <hr>
+                `<div class="card" 
+            id="screening-${screening.id}"
+            data-movie_id="${screening.movie_id.id}"
+            data-room_id="${screening.room_id.id}"
+            data-start_time="${screening.start_time}">
+            
+            <h3>${screening.start_time}</h3>
+            <hr>
             <p>Film : ${screening.movie_id.title}</p>
-                <hr>
+            <hr>
             <p>Salle : ${screening.room_id.name}</p>
-                <hr>
-            <button>Modifier</button>
-            <button>Supprimer</button>
+            <hr>
+            <button id="editScreening-${screening.id}">Modifier</button>
+            <button id="deleteScreening-${screening.id}">Supprimer</button>
             </div>`;
 
-            document.getElementById("planningDiv").appendChild(div);
+            planningDiv.appendChild(div);
+            setupEditScreeningButton(screening.id);
+            setupDeleteScreeningButton(screening.id);
         })
     }
+
+    function populateSelectOptions() {
+        fetch('http://localhost:8000/api/movies')
+            .then(response => response.json())
+            .then(data => {
+                const movieSelect = document.getElementById("movie");
+                data.forEach(movie => {
+                    const option = document.createElement("option");
+                    option.value = movie.id;
+                    option.textContent = movie.title;
+                    movieSelect.appendChild(option);
+                });
+            });
+
+        fetch('http://localhost:8000/api/rooms')
+            .then(response => response.json())
+            .then(data => {
+                const roomSelect = document.getElementById("room");
+                data.forEach(room => {
+                    const option = document.createElement("option");
+                    option.value = room.id;
+                    option.textContent = room.name;
+                    roomSelect.appendChild(option);
+                });
+            });
+    }
+
+    function addSeance() {
+        const planningAddBtn = document.getElementById("planningAddBtn");
+
+        planningAddBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            let movieId = document.getElementById("movie").value;
+            let roomId = document.getElementById("room").value;
+            let startTime = document.getElementById("start").value;
+
+            if (!movieId || !roomId || !startTime) {
+                alert("Veuillez remplir tous les champs");
+                return;
+            }
+
+            const editingId = planningAddBtn.dataset.editingId;
+
+            const donnees = {
+                movie_id: parseInt(movieId),
+                room_id: parseInt(roomId),
+                start_time: startTime
+            };
+
+            
+            if (editingId) {
+                fetch(`http://localhost:8000/api/screenings/${editingId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(donnees)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        getSeances();
+                        document.getElementById("planningFormDiv").style.display = "none";
+                        planningAddBtn.textContent = "Ajouter";
+                        delete planningAddBtn.dataset.editingId;
+                        document.getElementById("movie").value = "";
+                        document.getElementById("room").value = "";
+                        document.getElementById("start").value = "";
+                    })
+                    .catch(error => console.error('Erreur:', error));
+            } else {
+                fetch('http://localhost:8000/api/screenings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(donnees)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        getSeances();
+
+                        document.getElementById("movie").value = "";
+                        document.getElementById("room").value = "";
+                        document.getElementById("start").value = "";
+                    })
+                    .catch(error => console.error('Erreur:', error));
+            }
+        });
+    }
+
+    function setupEditScreeningButton(screeningId) {
+        const editBtn = document.getElementById(`editScreening-${screeningId}`);
+
+        editBtn.addEventListener("click", function () {
+            const div = document.getElementById(`screening-${screeningId}`);
+
+            document.getElementById("movie").value = div.dataset.movie_id;
+            document.getElementById("room").value = div.dataset.room_id;
+
+            document.getElementById("planningFormDiv").style.display = "block";
+
+            const submitBtn = document.getElementById("planningAddBtn");
+            submitBtn.textContent = "Enregistrer les modifications";
+            submitBtn.dataset.editingId = screeningId;
+        });
+    }
+
+    function setupDeleteScreeningButton(screeningId) {
+        const deleteBtn = document.getElementById(`deleteScreening-${screeningId}`);
+
+        deleteBtn.addEventListener("click", function () {
+            if (confirm("Etes vous sûr de vouloir supprimer cette séance ?")) {
+                fetch(`http://localhost:8000/api/screenings/${screeningId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        getSeances();
+                    })
+                    .catch(error => console.error('Erreur:', error));
+            }
+        });
+    }
+
+
 
 
 
@@ -377,7 +524,8 @@ document.addEventListener("DOMContentLoaded", function () {
     addRoom();
 
     getSeances();
-
+    addSeance();
+    populateSelectOptions();
 
 
 })
