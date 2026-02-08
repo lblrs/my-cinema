@@ -1,6 +1,7 @@
 # MyCinema
 
 Application web de gestion de cinéma permettant au gérant d'administrer les films, salles et séances.
+
 ---
 
 ## Description
@@ -10,7 +11,6 @@ MyCinema propose une interface d'administration complète pour gérer un cinéma
 * **Salles** - Gestion des salles de projection (nom, capacité, type)
 * **Séances** - Planification des séances en associant un film, une salle et un horaire
 
-L'application utilise une architecture MVC découplée : le backend PHP expose une API REST consommée par le frontend JavaScript.
 ---
 
 ## Fonctionnement
@@ -24,6 +24,7 @@ Le frontend communique avec l'API via `fetch()` pour :
 * Récupérer et afficher les données dynamiquement
 * Soumettre les formulaires d'ajout/modification
 * Supprimer des éléments après confirmation
+
 ---
 
 ## Liens 
